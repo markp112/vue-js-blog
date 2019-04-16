@@ -1,18 +1,34 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <menuBar app></menuBar>
+
+    <v-content fluid>
+      <router-view></router-view>
+    </v-content>
+
+    
+    <v-footer :fixed="fixed" app>
+      <span>&copy; 2018 Mark Phillips</span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import mainmenu from './components/toolbars/header'
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
+  name: 'App',
+ 
+
+  components:{
+    menuBar : mainmenu
+  },
+  data() {
+    return {
+       fixed:true,
+  }}
+ 
 }
 </script>
 
