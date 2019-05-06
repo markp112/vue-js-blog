@@ -1,8 +1,8 @@
 <template>
     <v-layout row wrap>
     
-    <!-- side menu bar -->
-  <sideBarLHS></sideBarLHS>
+      <!-- side menu bar -->
+      <sideBarLHS></sideBarLHS>     
       
 
         <v-flex >
@@ -19,9 +19,11 @@
               <template v-slot:extension>
               <v-layout row align-center justify-center fill-height>
                <v-flex xs6 >
-                <v-btn color="accent" outline @click="onPagesClick">Pages</v-btn>
-                <v-btn color="accent" outline >Files</v-btn>
-                <v-btn color="accent" outline >Config</v-btn>   
+                 <span v-for="item in toolbarItems" :key="item.route"> 
+                   
+                      <v-btn color="accent" outline @click="onToolbarItemClick(item)">{{ item.title }}</v-btn>
+                   
+                </span>
                </v-flex>   
               </v-layout>
                
@@ -36,9 +38,9 @@
             
             </v-toolbar>
             
-            
+      
         </v-flex>
-
+      
     </v-layout>
 </template>
 
@@ -47,9 +49,11 @@
 import sideBar from './sidebarLHS'
 
 export default {
-   components:{
+  
+  components:{
     sideBarLHS : sideBar
   },
+
     data(){
 
         return{
@@ -59,14 +63,15 @@ export default {
           
             right: false,
             title:"Sparkz - CMS",
-         
+            currentMenu:"home"
+            
             
         }
 
     },
   
-     watch:{
-    panelIndex:function(){
+  watch:{
+      panelIndex:function(){
     
      
     }
@@ -77,8 +82,15 @@ export default {
     auth(){
       return true
     },
+
+    toolbarItems(){
+      console.log('computed toolbarItems called')
+      return  this.$store.getters.getToolbarItems
+
+    }
   },
-    methods:{
+   
+   methods:{
         
         showSideBarClicked(){
 
@@ -91,11 +103,20 @@ export default {
             console.log('onPagesClick called')
             
             const data = {
-              menu:"Pages",
-              menuLocation: "subMenuLHS"
+              item:"Pages",
+              subItem: "subMenuLHS"
             }
             this.$store.dispatch("retrieveMenuItems",data)
             this.$router.push ("/pages")
+        },
+
+        onToolbarItemClick(data){
+            console.log ('ontoolbarItemClick with ',data)
+            if(data.route){
+          
+              this.$router.push(data.route)
+
+            }
         }
     }
     }

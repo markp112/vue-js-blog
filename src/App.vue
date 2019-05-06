@@ -2,8 +2,11 @@
   <v-app>
     <menuBar app></menuBar>
 
-    <v-content fluid>
-      <router-view></router-view>
+
+    <v-content  >
+      <v-container app fluid  fill-height align-content-start>
+        <router-view></router-view>
+      </v-container>
     </v-content>
 
     

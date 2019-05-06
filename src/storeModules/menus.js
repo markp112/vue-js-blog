@@ -1,5 +1,5 @@
 
-import Amplify from 'aws-amplify';
+/* import Amplify from 'aws-amplify';
 //import auth from '@aws-amplify/auth';
 import API from '@aws-amplify/api'
 //import AWS from 'aws-sdk'
@@ -13,10 +13,15 @@ Logger.LOG_LEVEL = "DEBUG"
 
 const logger = new Logger("store:menus")
 
-
+ */
 const defaultstate ={
     
-    menuItems:[],
+    //menu items for the left hand drawer, depending on the button clicked on the toolbar
+    menuItems:[],       
+
+    //menu items for the main toolbar at the top of the page, these will change according to the current page being viewed
+    toolbarItems:[],    
+
     currentPage:'',
 
 
@@ -24,13 +29,18 @@ const defaultstate ={
 const mutations = {
 
     setMenuItems: (state,menu)=>{
-       logger.debug('setMenuItems called',menu)
+       console.log('setMenuItems called',menu)
         
        state.menuItems=[...menu]
-
-    
     },
-    
+
+    setToolbarItems: (state,toolbar) => {
+
+        console.log('setToolBarItems Called', toolbar)
+
+        state.toolbarItems=[...toolbar]
+
+    }
     
     }
     
@@ -39,44 +49,91 @@ const mutations = {
 const getters= {
 
     getMenuItems:state =>{
-        logger.debug('getMenuItems Called',state)
+        console.log('getMenuItems Called',state)
 
         if (state.menuItems !== undefined){
             return state.menuItems
         }else{
+            
             return [{menuItem:"No Items",component:'',icon:''}]
         }
         
     },
 
-    
+    getToolbarItems: state =>{
+
+        console.log('getToolbarItems Called',state)
+
+        if (state.toolbarItems !== undefined){
+          
+            return state.toolbarItems
+
+        }else{
+            return [{route:"No Items",title:'Not Set'}]
+        }
+        
+    },
+
 }
 
 
 const newLocal = {
    
-    retrieveMenuItems: async ({commit,dispatch}, dataItems) => {
-
-        
+    retrieveMenuItems:  ({commit,dispatch}, dataItems) => {
+        console.log('retrieveMenuItems Called',dataItems)
         try {
 
 
             
-            var menuItems = await dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
-
+            dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
+            .then(menuItems =>{
                 console.log('menuItems =',menuItems)
-                        
-                commit('setMenuItems', menuItems);
-                  
-    }
+                
+                if(menuItems !== undefined){
+
+                    commit('setMenuItems', menuItems);
+                }
+
+            })
+                }
+   
         catch (err) {
-            logger.debug('error from dynamodb', err);
+            console.log('error from dynamodb', err);
         }
     },
 
+    retrieveToolbarItems: ({commit,dispatch},dataItems) => {
+        
+        console.log('retrieveToolbarItems Called',dataItems)
+        
+        try {
+        
+          //  return new Promise(function(resolve, reject){
+        
+                dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
+                .then(toolbarItems =>{
+        
+                    console.log('ToolBarItems =',toolbarItems)
+                    
+                    if( toolbarItems !== undefined ){
+     
+                         commit('setToolbarItems', toolbarItems);
+                       // resolve()
+                    }
+     
+                })
+           // })
+            
+               }
+  
+       catch (err) {
+           console.log('error from dynamodb', err);
+       }
+
+    },
+};
 
    
-};
 
 
 const actions = newLocal

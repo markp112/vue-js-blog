@@ -36,14 +36,14 @@ export default ({
                 region: "eu-west-2",
             },
             {
-                name: "igGetUser",
+                name: "sparkzCMS_isUserRegistered",
                 
-                endpoint: "https://m58soaho25.execute-api.eu-west-2.amazonaws.com/",
+                endpoint: "https://rafu92nenk.execute-api.eu-west-2.amazonaws.com/",
                 region: "eu-west-2",
             },
             {
-                name: "igGetCategories",
-                endpoint: "https://7siod7irp4.execute-api.eu-west-2.amazonaws.com/",
+                name: "sparkzCMS_RegisterUser",
+                endpoint: "https://79hqnk5v66.execute-api.eu-west-2.amazonaws.com",
                 region: "eu-west-2",
             },
 

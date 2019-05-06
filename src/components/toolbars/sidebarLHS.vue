@@ -2,10 +2,10 @@
       <v-navigation-drawer
             persistent
             :mini-variant = "miniVariant"
-            :clipped="clipped"
+            :clipped= "clipped"
             v-model = "drawerLocal"
             enable-resize-disable-resize-watcher
-            fixed
+            
             app
             dark
         >
@@ -24,7 +24,7 @@
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title>{{siteOwnerName}}</v-list-tile-title>
+              <v-list-tile-title>{{ userName }}</v-list-tile-title>
             </v-list-tile-content>
 
              <v-list-tile-action>
@@ -50,7 +50,7 @@
             </v-list-tile-action>
   
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.menuItem }}</v-list-tile-title>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -70,8 +70,8 @@ export default {
 
               clipped:true,
                 miniVariant: false,
-                drawerLocal:true,
-                avatar: "../../assets/avatar.jpg",
+                drawerLocal: true,
+                avatar: "",
                 siteOwnerName:'Mark Phillips',
                
 
@@ -81,10 +81,32 @@ export default {
 
     methods:{
           onMenuItemClick(menuItem){
-           console.log('onMenuItemClick called',menuItem)
+           
+           console.log("sideBar on Menu Item clicked->", menuItem)
 
-            const item ={page:menuItem.component}
-           this.$store.dispatch("retrievePageItems",item)
+           switch (menuItem.title){
+             case "pages" : 
+               
+               const item = {
+                
+                  page:menuItem.component
+               
+               }
+           
+              this.$store.dispatch("retrievePageItems",item)
+              
+              break;
+             
+             case "New Site": 
+
+               this.$router.push('/newSite')
+
+               break;
+
+           }
+           console.log('onMenuItemClick called', menuItem)
+
+          
 
 
         },
@@ -94,8 +116,14 @@ export default {
     computed:{
         items(){
             console.log('watch Items called',this.$store.getters.getMenuItems)
+            
             return this.$store.getters.getMenuItems
-        }
+        },
+        userName (){
+
+          this.$store.getters.userName
+
+        },
 
     },
 }

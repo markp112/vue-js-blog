@@ -21,24 +21,34 @@ const mutations = {
 
 const getters = {
 
-    getPageItems:state => {return state.pageItems}
+    getPageItems:state => {
+    
+        return state.pageItems
+    }
 
 }
 
 const actions = {
 
-    retrievePageItems:async ({commit,dispatch}, dataItems)=>{
+    retrievePageItems:({commit,dispatch}, dataItems)=>{
        
 
         console.log('retrievePageItems Called with parameter', dataItems);
       
         try {
-            dataItems.menu="pageItems"
-            dataItems.menuLocation ="mainMenu"
-            var result =  await dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
-           
-                    
-            commit('setPageItems', pages);
+            dataItems.item="pageItems"
+            dataItems.subItem ="mainMenu"
+            dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
+            .then(pages=>{
+                
+            console.log('pages =',pages)
+            if(pages !== undefined)     {
+                commit('setPageItems', pages);
+
+             }
+            
+            })
+            
         }
         
         catch (err) {
