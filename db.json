@@ -1,0 +1,115 @@
+
+{
+
+"Pages":
+         [{
+               "menuItem" : "Main Menu",
+               "component":"mainMenu",
+               "icon" :"Home"
+               },
+
+               {
+               "menuItem":"Side Bar",
+               "component":"sideBarLHS",
+               "icon":"Home"
+               }
+        ],
+"pageItems":[
+
+        {
+            "title":"Home",
+            "status":"edit",
+            "icon":"home",
+            "url":"/",
+            "type":"page",
+            "dateCreated":"",
+            "dateEdited":"",
+            "version":""
+        },
+        {
+            "title":"Content",
+            "status":"edit",
+            "icon":"",
+            "url":"/Content",
+            "type":"page",
+            "dateCreated":"",
+            "dateEdited":"",
+            "version":""
+        },
+        {
+            "title":"About",
+            "status":"edit",
+            "icon":"question",
+            "url":"/about",
+            "type":"page",
+            "dateCreated":"",
+            "dateEdited":"",
+            "version":""
+        }
+      ],
+
+        
+ "toolBarMenu":
+         [
+          {
+                "title":"Sign Up",
+                "route":"/signUp"
+          },
+          {
+          "title":"Sign In",
+          "route":"/signIn"
+            } ,
+            {
+                "title":"About",
+                "route":"/about"
+                  } ,  
+                  {
+                    "title":"Contact",
+                    "route":"/contact"
+            }   
+        ],
+  "toolBarEditor":[
+
+      {
+        "menuItemName":"fixed",
+        "toolTip":"removes the shadow from the toolbar",
+        "controlType":"switch",
+        "model":"isFixed",
+        "hasLabel" : true
+      },
+      {
+        "menuItemName":"dark",
+        "toolTip":"Applies the dark theme",
+        "controlType":"switch",
+        "model":"isDark",
+        "hasLabel" : true
+      },
+      {
+        "menuItemName":"prominent",
+        "toolTip":"Increases the height of the toolbar content and extension",
+        "controlType":"switch",
+        "model":"isProminent",
+        "hasLabel" : true
+      },
+     
+      {
+        "menuItemName":"Extended",
+        "toolTip":"Force the toolbar to generate an extension",
+        "controlType":"switch",
+        "model":"isExtended",
+        "hasLabel" : true
+        
+      },
+      {
+        "menuItemName":"Toolbar Colour",
+        "toolTip":"Set the colour of the toolbar",
+        "controlType":"colourPicker",
+        "model":"backColor",
+        "selectList":"colourList",
+        "hasLabel" : false
+      }
+      
+  ]
+        
+
+}
