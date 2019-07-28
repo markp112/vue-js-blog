@@ -8,19 +8,19 @@
             <masterContainer flexElement='xs12'
                                 :element = "contentLeft" 
                                 :index = "index"
-                                @onTemplateChange = "onTemplateChanged(template,0)" />
+                                />
       </v-flex>
       <v-flex xs4>
             <masterContainer flexElement='xs12'
                                 :element = "contentCentre" 
                                 :index = "index"
-                                @onTemplateChange = "onTemplateChanged(template,1)"/>
+                               />
       </v-flex>
       <v-flex xs4>
             <masterContainer flexElement='xs12'
                                 :element = "contentRight" 
                                 :index = "index"
-                                @onTemplateChange = "onTemplateChanged(template,2)"/>
+                               />
       </v-flex>
  
     </v-layout>
@@ -32,6 +32,7 @@
 
 import masterContainer from './masterContainer'
 
+
 export default {
    props:{
         //this controls sequence on the page
@@ -41,7 +42,7 @@ export default {
         },
         // contains the content for this section
         elements:{  
-                    type:Array
+                    type: Array
                     
                     }
     },
@@ -52,41 +53,18 @@ export default {
     },
     data(){
 
-        return{
+        return {
+               
                contentLeft : this.elements[0],
                contentCentre : this.elements[1],
                contentRight : this.elements[2]
+            
             }
 
 
     },
-      methods:{
-        
-           onTemplateChanged(template,elementIndex){
-            
-            switch (template){
-
-                case "textComponent":
-                    this.elements[elementIndex] = dataClass.types.text
-                   // this.localContentType = dataClass.types.text
-                   // console.log("layout is now",this.localContentType, this.layout)
-                    break;
-
-                case "imageComponent":
-                    element.type = dataClass.types.text
-                  //  this.localContentType = dataClass.types.image
-                    break;
-            }
-
-            const elementComponent = {
-                element : element,
-                index: this.index,
-                
-            }
-
-            this.$store.dispatch("updateElement", elementComponent)
-        }
-    }
+  
+  
   
 }
 </script>

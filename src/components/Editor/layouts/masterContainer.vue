@@ -2,22 +2,29 @@
 <div >
     
         <v-flex class="border"  v-bind="flexWidth"  >
-
+     
+           
             <editToolBar    :editButtonActive = "!isMenuSelected"
                           
-                            @menuClicked = "onMenuClicked"
+                            @onMenuClicked = "onMenuClicked"
                             
                             @onEditClicked = "edit = !edit"
                             @onAlignLeftClicked = "alignLeft"
                             @onAlignRightClicked = "alignRight"
                             @onAlignCentreClicked = "alignCentre"
+                            
                         />
 
-            
+           
             
             <v-layout row v-bind = "layoutAttributes" >
                            
-                    <component :is="componentId" :element = "localElement" :isEditing = "edit" :index="index"></component>    
+                    <component :is="componentId" 
+                                :element = "localElement" 
+                                :isEditing = "edit" 
+                                :index="index"
+                                @textEditorHasContent="isMenuSelected = true"
+                                ></component>    
                 
             </v-layout>
             
@@ -29,12 +36,12 @@
 <script>
 
 import edittoolbar from '../helpers/editorToolBar'
-import textcomponent from '../components/utils/textComponent'
+import textcomponent from '../components/views/textComponent'
 import imagecomponent from '../helpers/image'
 import dataClasses from '../../../dataClasses/pageSection'
 
  export default {
-   name: 'master',
+   name: 'masterContainer',
     props: {
 
         //id for this component
@@ -61,7 +68,7 @@ import dataClasses from '../../../dataClasses/pageSection'
         // i.e. is it the first element the second etc
         element:{
             type: Object,
-            default:null
+            default: null
         }
     },
 
@@ -86,18 +93,18 @@ import dataClasses from '../../../dataClasses/pageSection'
           
             fillHeight: true,
 
-            localElement: this.element
+            localElement: this.element,
+
     }
        },
     
     computed: {
+        ///configures the alignment and justification of the element in our container
             layoutAttributes () {
             return {
                 [this.alignment]: true,
                 [this.justify]: true,
-             //   [this.flexDirection]: true,
-           //     reverse: this.reverse,
-               // 'fill-height': this.fillHeight
+           
                 }
             },
              flexWidth(){
@@ -109,12 +116,48 @@ import dataClasses from '../../../dataClasses/pageSection'
    
    methods:{
 
-
+       onToolBarClicked(isSelected){
+          
+           this.isControlSelected = !this.isControlSelected
+       },
         onMenuClicked(template){
+            
             this.isMenuSelected = true
             this.edit = true
             this.componentId = template
-            this.$emit("onTemplateChange",template)
+            
+           console.log("template =",template)
+           console.log("element = ", this.element)
+
+            switch (template){
+
+                case "textComponent":
+                    this.element.type = dataClasses.types.text
+                   // this.localContentType = dataClass.types.text
+                   // console.log("layout is now",this.localContentType, this.layout)
+                    break;
+
+                case "imageComponent":
+                    this.element.type = dataClasses.types.image
+                  //  this.localContentType = dataClass.types.image
+                    break;
+            }
+
+               const elementComponent = {
+                element : this.element,
+                index: this.index,
+                
+            }
+            try {
+
+                this.$store.dispatch("updateElement", elementComponent)
+            
+            } catch (error) {
+                console.log("error occurred in updating store",error)
+            
+            }
+
+          /// this.$emit("onTemplateChange",template)
         },
 
         alignLeft(){
@@ -129,6 +172,20 @@ import dataClasses from '../../../dataClasses/pageSection'
         }
 
    },
+   created(){
+       switch (this.element.type ){
+           case dataClasses.types.text:
+               this.componentId = "textComponent"
+               break;
+               
+           case dataClasses.types.image:
+               this.componentId = "imageComponent"
+
+               
+       }
+       
+            
+   },
  }
 </script>
 
@@ -136,6 +193,12 @@ import dataClasses from '../../../dataClasses/pageSection'
 
 .border{
      border: 1px dashed  gray;
+}
+
+.borderIamSelected{
+     border:1px dotted red;
+     padding: 5px;
+     
 }
 .titleBar {
     background:grey,

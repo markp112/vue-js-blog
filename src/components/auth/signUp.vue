@@ -117,8 +117,8 @@ const logger = new Logger("SignUpPage")
         verificationCode:null,
 
              dataItem:{
-                menu:"toolBarMenu",
-                menuLocation:"letsGetStarted"
+                item : "toolBarMenu",
+                subItem : "letsGetStarted"
 
             },
       }
@@ -183,7 +183,7 @@ const logger = new Logger("SignUpPage")
         this.showSnackBar = true;
         
         this.$store.dispatch("retrieveToolbarItems",this.dataItem)
-        
+        this.$store.dispatch("updateIsInEditor",true)
         this.$router.push('/start');
       }
     })

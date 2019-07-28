@@ -1,24 +1,32 @@
 <template>
-<v-container fluid 
-               >
-  
-  <v-layout justify-start align-center  column fill-height>
-    <v-flex xs-12>
+<div class="pageHeight">
 
-      <div  class="signInContainer">
-        <v-layout>
-          <v-card width="400px">
-            <v-form @submit.prevent="onSubmit">
-            <v-text-field
+
+  <v-layout align-center column>
+    <v-flex xl-6>
+    
+        <v-container fluid grid-list-xs>
+          <v-layout row wrap>
+            <v-flex xs-12>
+              
+            <v-card width = "400px">
+               <v-flex xl-8>
+                <v-form @submit.prevent="onSubmit">
+                <v-text-field
                 label="E-mail"
                 v-model="email"
                 placeholder="Enter Email"
-            ></v-text-field>
+                box>
+                
+              </v-text-field>
             
             <v-text-field
                 label="Password"
                 v-model="password"
                 type="password"
+                
+                placeholder="Enter Password"
+                box
               >
 
             </v-text-field>
@@ -27,12 +35,20 @@
                 <v-btn flat type="submit" v-if="email && password">Submit</v-btn>
               </v-toolbar>
             </v-form>
+            </v-flex>
           </v-card>
+            </v-flex>
+          </v-layout>       
+   
+   
+        </v-container>
+
+    
           <v-snackbar
             v-model="showSnackBar"
           
             top>
-            {{ statusMsg }}
+            <div>{{ statusMsg }}</div>
             <v-btn
                 color="secondary"
                 flat
@@ -41,12 +57,11 @@
                 Close
             </v-btn>
           </v-snackbar>
-        </v-layout>
-      </div>
-     
+       
     </v-flex>
   </v-layout>
-</v-container>
+
+</div>
 </template>
 
 <script>
@@ -69,22 +84,33 @@ const logger = new Logger("SignInPage")
         verificationCode:null,
 
           dataItem: {
-                menu:"toolBarMenu",
-                menuLocation:"sites"
+                item : "toolBarMenu",
+                subItem :"sites"
 
             },
 
       }
     },
     methods: {
+      
       onSubmit () {
-        logger.debug('SignIn Called')
-        const formData = {
+      
+      logger.debug('--> SignIn Called')
+      
+      const formData = {
           email: this.email,
           password: this.password,
 
         }
   
+
+      const Offline = this.$store.getters.isOffline
+
+      if (Offline == true){
+        this.$store.dispatch("offLineLogin")
+        this.performLogin()
+      }else{
+
         this.$store.dispatch('login',{
             email: formData.email,
             password: formData.password
@@ -92,17 +118,7 @@ const logger = new Logger("SignInPage")
         .then (res=>{
             if(res == 'success'){
               
-              this.statusMsg = "Login Successful";
-              this.showSnackBar = true;
-         
-              
-              this.$store.dispatch("retrieveToolbarItems",this.dataItem)                        
-                
-              this.dataItem.menu = "sideBarMenu"
-                
-              this.$store.dispatch("retrieveMenuItems",this.dataItem)             
-
-              this.$router.push('/sites');
+              this.performLogin()
             }
             else{
               this.statusMsg = res;
@@ -110,25 +126,63 @@ const logger = new Logger("SignInPage")
             }
         })
         .catch(err=>{
-          if(err=="invalid user name or password"){
-              this.statusMsg="invalid user name or password";
-              this.showSnackBar=true;
+          if(err.message == "Incorrect user name or password"){
+
+              this.statusMsg = "Invalid user name or password";
+              this.showSnackBar = true;
+
           }else{
-            console.log(err);
+              console.log(err);
+
               this.statusMsg=err.errMsg;
               this.showSnackBar=true;
           }
         })
 
         
-      },
+      }
     
+
+
+    },
+
+     performLogin(){
+              this.statusMsg = "Login Successful";
+              this.showSnackBar = true;
+              
+              //retrieve items for the top toolbar based on the Sites page the page we are navigating to
+              this.$store.dispatch("retrieveToolbarItems",this.dataItem)                        
+                
+               //retrieve items for sideBarMenu based on the Sites page the page we are navigating to
+              this.dataItem.item = "sideBarMenu"
+                
+              this.$store.dispatch("retrieveMenuItems",this.dataItem)             
+
+              this.$store.dispatch("updateIsInEditor", false)
+              this.$router.push('/sites');
+    },
+   
+  },
+
+  created(){
+    if (this.$store.dispatch("tryAutoLogin")){
+
+      console.log("performing login via auto login")
+
+        this.performLogin()
     }
+  },
+  beforeMount() {
+      this.$store.dispatch("updatePageHeight","800px")
+    },
   }
 </script>
 
 <style scoped>
  .signInContainer {
   height: 350px;
+
+  
 }
+.pageHeight{height: 800px;}
 </style>

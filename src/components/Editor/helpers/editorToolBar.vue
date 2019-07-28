@@ -6,13 +6,20 @@
  
  
  <template>
-      <v-toolbar  dense flat>
+      <v-toolbar  dense flat >
            
             <v-menu open-on-hover bottom ripple offset-y>
                                         
                     <v-list>
-                        <v-list-tile v-for="item in menuItems" :key="item.template" @click="onMenuClicked(item.template)">
-                            <v-list-tile-title>{{ item.menuText }}</v-list-tile-title>
+                        <v-list-tile v-for="item in menuItems" 
+                                    :key="item.template" 
+                                    @click="onMenuClicked(item)">
+
+                            <v-list-tile-action>
+                                <v-icon> {{ item.icon }} </v-icon> 
+                            </v-list-tile-action>
+                            <v-list-tile-content>{{ item.menuText }} </v-list-tile-content>
+
                         </v-list-tile>
                     </v-list>
                 <v-btn flat dark small color="primary" slot="activator" align-left>
@@ -51,14 +58,17 @@
      data(){
     
        return {
+           
+          
+
            menuItems:[
                 {
-                    icon:"",
+                    icon:"waves",
                     menuText:"Add Text",
                     template:"textComponent"
                 },
                 {
-                    icon:"",
+                    icon:"insert_photo",
                     menuText:"Add Image",
                     template:"imageComponent"
                 }
@@ -66,9 +76,16 @@
        }
      },
      methods:{
-         onMenuClicked(template){
-             console.log("menuClicked",template)
-             this.$emit("menuClicked", template)
+
+     
+
+         onMenuClicked(item){
+
+             var template = item.template
+
+             console.log("ToolbarEditor -->menuClicked=",item,template)
+
+             this.$emit("onMenuClicked", template)
          },
 
          onEditClicked(){

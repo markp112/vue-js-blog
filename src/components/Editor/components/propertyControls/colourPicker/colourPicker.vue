@@ -1,14 +1,16 @@
+
+//colour picker provides a means to pick a colour from the existing theme colours
 <template>
     
-    <v-item-group>
-        <v-container grid-list-sm>
+    <v-item-group  >
+        <v-container grid-list-sm z-index="100">
             <v-layout wrap>
                 <v-flex v-for ="colour in colourList" :key="colour"
                     xs12 md3  
                 >
                 <v-item>
                     
-                    <v-card
+                    <v-card  
                         :color = "colour"
                         height = "20"
                         width = "20"
@@ -29,13 +31,22 @@
 
 <script>
 
-import theme from '../../../../plugins/theme'
+import theme from '../../../../../plugins/theme'
 
 
 
 export default {
 
-    props :['selectedColour'],
+    props :{
+            selectedColour:{
+                type:String,
+                default:"primary"
+            },
+            propName:{
+                    type:String,
+                    default:""
+            }
+    },
 
   
     data(){
@@ -55,7 +66,15 @@ export default {
     methods:{
 
         onColourClicked(colour){
+            
             this.internalSelectedColour = colour
+
+            const data = {
+                    control : this.propName,
+                    value : colour
+            }
+
+            this.$emit("onChange",data)
 
         }
 

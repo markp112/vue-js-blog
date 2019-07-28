@@ -40,6 +40,8 @@ const defaultState = {
     //site list holds the list of sites the user has created
     siteList:[],
 
+    siteId: null,
+
 }
 
 const mutations = {
@@ -64,6 +66,10 @@ const mutations = {
 
     setListofSites: (state, siteList) =>{
         state.siteList = [...siteList]
+    },
+
+    setCurrentSiteId:(state,siteId)=>{
+        state.siteId = siteId
     }
 
 }
@@ -170,21 +176,30 @@ const actions = {
             console.log("Failed to create new website", err)
         })
 
-}
+},
 
+updateSiteId:({commit},siteId)=>{
+    commit("setCurrentSiteId",siteId)
+}
 
 }
 
 const getters = {
 
-    getSiteList:state =>{
+    getSiteList: state =>{
         return state.siteList
+    },
+    getSiteId: state =>{
+        return state.siteId
     }
 
 }
 
 export default {
+
     state:defaultState,
     mutations,
+    getters,
     actions
+
 }

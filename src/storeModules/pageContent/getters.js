@@ -4,7 +4,7 @@ export const getLayouts = (state)=>{
 }
 
 //key should be formatted as ###LnEn###
-export const getElementContents=(state)=> (key) =>{
+export const getElementContents = state => (key) =>{
     console.log("-->getElementContents Called",key)
     
     if (state.Elementcontents !== undefined){

@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div v-html= "localContent">
       
-            <p  v-html= "localContent"></p>
+      
         
     </div>
 </template>

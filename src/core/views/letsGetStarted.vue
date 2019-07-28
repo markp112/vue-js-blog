@@ -74,8 +74,8 @@ export default {
         return {
 
              dataItem:{
-                menu:"cards",
-                menuLocation:"letsGetStarted"
+                item: "cards",
+                subITem: "letsGetStarted"
 
             },
 
@@ -85,8 +85,9 @@ export default {
     },
 
     beforeMount() {
-    
+        
         this.$store.dispatch("retrieveCardItems", this.dataItem)
+        this.$store.dispatch("updatePageHeight","400px")
 
     },
 

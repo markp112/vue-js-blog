@@ -68,48 +68,148 @@
                     "route":"/contact"
             }   
         ],
+        
   "toolBarEditor":[
 
       {
-        "menuItemName":"fixed",
-        "toolTip":"removes the shadow from the toolbar",
-        "controlType":"switch",
-        "model":"isFixed",
-        "hasLabel" : true
+        "controlType": "switch",
+        "hasLabel": true,
+        "menuItemName": "fixed",
+        "model": "isFixed",
+        "toolTip": "removes the shadow from the toolbar"
       },
       {
-        "menuItemName":"dark",
-        "toolTip":"Applies the dark theme",
-        "controlType":"switch",
-        "model":"isDark",
-        "hasLabel" : true
+        "controlType": "switch",
+        "hasLabel": true,
+        "menuItemName": "dark",
+        "model": "isDark",
+        "toolTip": "Applies the dark theme"
       },
       {
-        "menuItemName":"prominent",
-        "toolTip":"Increases the height of the toolbar content and extension",
-        "controlType":"switch",
-        "model":"isProminent",
-        "hasLabel" : true
-      },
-     
-      {
-        "menuItemName":"Extended",
-        "toolTip":"Force the toolbar to generate an extension",
-        "controlType":"switch",
-        "model":"isExtended",
-        "hasLabel" : true
-        
+        "controlType": "switch",
+        "hasLabel": true,
+        "menuItemName": "prominent",
+        "model": "isProminent",
+        "toolTip": "Increases the height of the toolbar content and extension"
       },
       {
-        "menuItemName":"Toolbar Colour",
-        "toolTip":"Set the colour of the toolbar",
-        "controlType":"colourPicker",
-        "model":"backColor",
-        "selectList":"colourList",
-        "hasLabel" : false
+        "controlType": "switch",
+        "hasLabel": true,
+        "menuItemName": "Extended",
+        "model": "isExtended",
+        "toolTip": "Force the toolbar to generate an extension"
+      },
+      {
+        "controlType": "switch",
+        "hasLabel": true,
+        "menuItemName": "Flat",
+        "model": "isFlat",
+        "toolTip": "remove the shadow from the toolbar to make it flat"
+      },
+      {
+        "controlType": "titleControl",
+        "hasLabel": false,
+        "menuItemName": "Has toolbar title",
+        "model": "x",
+        "toolTip": "Include a title for the toolbar"
+      },
+      {
+        "controlType": "colourPicker",
+        "hasLabel": false,
+        "menuItemName": "Toolbar Colour",
+        "model": "backColor",
+        "selectList": "colourList",
+        "toolTip": "Set the colour of the toolbar"
       }
-      
-  ]
+    ],
+    "buttonEditor"  : [
+      {
+        "propName" : "isRound",
+        "propControlType": "switch",
+        "propLabel": "isRound",
+        "propType": "Boolean",
+        "propValue": false
         
+      },
+      {
+        "propName" : "isOutline",
+        "propControlType": "switch",
+        "propLabel": "isOutline",
+        "propType": "Boolean",
+        "propValue": false
+        
+      },
+      {
+        "propName" : "caption",
+        "propControlType": "textProperty",
+        "propLabel": "Caption",
+        "propType": "string",
+        "propValue": "submit"
+        
+      },
+      {
+        "propName" : "foreColour",
+        "propControlType": "colourPicker",
+        "propLabel": "Fore Colour",
+        "propType": "string",
+        "propValue": "white"
+        
+      },
+      {
+        "propName" : "backColour",
+        "propControlType": "colourPicker",
+        "propLabel": "Back Colour",
+        "propType": "string",
+        "propValue": "primary"
+        
+      }
+    ],
+
+  
+  "pageDetails":[
+
+    {
+      "home":[
+          {
+            "template" : "master",
+            "toolbarButtons" : [
+                {
+                  "label" : "Home",
+                  "url" : "/"
+
+                },
+                {
+                  "label" : "About",
+                  "url" : "/About"
+
+                },
+                {
+                  "label" : "Contact",
+                  "url" : "/Contact"
+
+                }
+            ],
+            "articles":[
+              {
+                "Title":"My Trip to France",
+                "image":"url to image"
+              },
+              {
+                "Title":"My Trip to Spain",
+                "image":"url to image"
+              }
+            ]
+          }
+      ]
+    }
+  
+  
+  
+
+    
+
+
+  ]
+  
 
 }

@@ -16,7 +16,7 @@ module.exports={
     },
         Storage:{
             region:'',
-            bucket:'',
+            sitesbucket:'sparkzcmssites',
             identityPoolId:'',
         },
         API:{

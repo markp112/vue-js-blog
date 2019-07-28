@@ -1,19 +1,5 @@
 
-/* import Amplify from 'aws-amplify';
-//import auth from '@aws-amplify/auth';
-import API from '@aws-amplify/api'
-//import AWS from 'aws-sdk'
-import config from '../AWS/amplifyConfigure';
 
-Amplify.configure(config)
-
-
-const Logger = Amplify.Logger
-Logger.LOG_LEVEL = "DEBUG"
-
-const logger = new Logger("store:menus")
-
- */
 const defaultstate ={
     
     //menu items for the left hand drawer, depending on the button clicked on the toolbar
@@ -22,7 +8,8 @@ const defaultstate ={
     //menu items for the main toolbar at the top of the page, these will change according to the current page being viewed
     toolbarItems:[],    
 
-    currentPage:'',
+    
+    isInEditor: false,
 
 
 }
@@ -34,21 +21,29 @@ const mutations = {
        state.menuItems=[...menu]
     },
 
+    //set the main toolbar Items at the top of the page
     setToolbarItems: (state,toolbar) => {
 
         console.log('setToolBarItems Called', toolbar)
 
         state.toolbarItems=[...toolbar]
 
+    },
+
+    setIsInEditor:(state,value)=>{
+        state.isInEditor = value
     }
+
     
     }
     
 
 
-const getters= {
+const getters = {
 
-    getMenuItems:state =>{
+
+    //return the menu Items for the left hand navigation drawer
+    getMenuItems: state =>{
         console.log('getMenuItems Called',state)
 
         if (state.menuItems !== undefined){
@@ -60,6 +55,7 @@ const getters= {
         
     },
 
+    // return the buttons for the top toolbar
     getToolbarItems: state =>{
 
         console.log('getToolbarItems Called',state)
@@ -74,18 +70,27 @@ const getters= {
         
     },
 
+    //get the state of isInEditor
+    getIsInEditor: state =>{
+        console.log("getIsInEditor",state.isInEditor)
+        return state.isInEditor
+    }
+
 }
 
 
-const newLocal = {
+
+const actions = {
    
+    // retrieveMenuItems
+    // controls what appears in the LHS menu bar
+    //
     retrieveMenuItems:  ({commit,dispatch}, dataItems) => {
         console.log('retrieveMenuItems Called',dataItems)
+        
         try {
 
-
-            
-            dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
+            dispatch("LambdaGetData",dataItems,{root:true})
             .then(menuItems =>{
                 console.log('menuItems =',menuItems)
                 
@@ -102,15 +107,15 @@ const newLocal = {
         }
     },
 
-    retrieveToolbarItems: ({commit,dispatch},dataItems) => {
+    retrieveToolbarItems: ({commit,dispatch}, dataItems) => {
         
-        console.log('retrieveToolbarItems Called',dataItems)
+        console.log('--> retrieveToolbarItems Called',dataItems)
         
         try {
         
           //  return new Promise(function(resolve, reject){
         
-                dispatch("LambdaretrieveMenuItems",dataItems,{root:true})
+                dispatch("LambdaGetData", dataItems, {root:true})
                 .then(toolbarItems =>{
         
                     console.log('ToolBarItems =',toolbarItems)
@@ -131,12 +136,15 @@ const newLocal = {
        }
 
     },
+
+    // update is In Editor toggles the component shown in the side bar
+    updateIsInEditor:({commit},value) =>{
+        commit("setIsInEditor",value)
+    }
 };
 
    
 
-
-const actions = newLocal
 
 
 export default {

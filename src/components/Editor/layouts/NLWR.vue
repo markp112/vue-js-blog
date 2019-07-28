@@ -4,13 +4,13 @@
             <masterContainer flexElement='xs12'
                                 :element = "contentLeft" 
                                 :index = "index"
-                                @onTemplateChange = "onTemplateChanged(template,0)"/>
+                               />
       </v-flex>
       <v-flex xs8>
             <masterContainer flexElement='xs12' 
                                 :element = "contentRight" 
                                 :index = "index"
-                                @onTemplateChange = "onTemplateChanged(template,1)"/>
+                                />
       </v-flex>
     </v-layout>
 </template>
@@ -19,6 +19,8 @@
 
 
 import masterContainer from './masterContainer'
+
+
 
 export default {
 
@@ -48,32 +50,6 @@ export default {
 
 
     },
-      methods:{
-        
-           onTemplateChanged(template,elementIndex){
-            
-            switch (template){
-
-                case "textComponent":
-                    this.elements[elementIndex] = dataClass.types.text
-                   // this.localContentType = dataClass.types.text
-                   // console.log("layout is now",this.localContentType, this.layout)
-                    break;
-
-                case "imageComponent":
-                    element.type = dataClass.types.text
-                  //  this.localContentType = dataClass.types.image
-                    break;
-            }
-
-            const elementComponent = {
-                element : element,
-                index: this.index,
-                
-            }
-
-            this.$store.dispatch("updateElement", elementComponent)
-        }
-    }
+     
 }
 </script>

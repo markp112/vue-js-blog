@@ -1,37 +1,48 @@
 <template>
-  <v-app>
-    <menuBar app></menuBar>
+  <v-app id="app">
+    <menuBar />
+    <sideBarLHS />
+    <coreRouter />
 
-
-    <v-content  >
-      <v-container app fluid  fill-height align-content-start>
-        <router-view></router-view>
-      </v-container>
-    </v-content>
-
-    
-    <v-footer :fixed="fixed" app>
-      <span>&copy; 2018 Mark Phillips</span>
-    </v-footer>
+    <Footer/>
+ 
   </v-app>
 </template>
 
 <script>
 
-import mainmenu from './components/toolbars/header'
+import mainmenu from './core/header'
+import footer from './core/footer'
+import router from './core/cta'
+import sideBar from './core/sidebarLHS'
+
 
 export default {
   name: 'App',
  
 
   components:{
-    menuBar : mainmenu
+    menuBar : mainmenu,
+    Footer:footer,
+    coreRouter : router,
+    sideBarLHS : sideBar
   },
+
   data() {
     return {
-       fixed:true,
-  }}
- 
+      
+      fixed:true,
+      }
+  },
+
+ computed:{
+
+   pageHeightMax() {
+
+      return this.$store.getters.getPageHeight
+    
+   }
+ }
 }
 </script>
 
@@ -44,4 +55,5 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
 </style>

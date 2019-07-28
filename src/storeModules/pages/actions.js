@@ -1,5 +1,5 @@
    
-   const MAINTOOLBAR = "mainToolBar"
+   const MAINTOOLBAR = "toolBarProps"
    
    // retrievePageItems -- retrieve the list of pages for the current section
         // i.e a home page might have an about contact and blog section

@@ -6,15 +6,68 @@ const CONTENTFILENAME = "content.txt"        // default filename that holds text
 
 
 
-//describes the content of each of the elements in the layout sections
-class elementClass  {
-constructor(number, type, fileName){
-    this.number = number
-    this.type = type 
-    this.fileName = fileName
 
-}}
+//creates the placeholders for each element within a layout
+export const   createElements = ({state},number)=>{
 
+    console.log("--> createElements called",number)
+   
+    let elements=[]
+         return new Promise(function(resolve,reject){
+             
+            try {
+              //var elements = []
+                for(var i = 0 ; i < number; i++){
+
+                    let newElement = new dataClasses.element(i,dataClasses.types.undefined)
+            
+                    elements.push(newElement)
+                
+                }
+                resolve(elements)
+                }
+                
+                catch(err){
+                    reject(err)
+                }
+        
+    }
+         )
+}
+
+
+// createLayout
+// create the layout component and add it to layouts
+// based on the template:
+//  layout - layout to use
+// elements the number of components making up this layout
+//
+export const createLayout = ({state,dispatch},template)=>{
+    
+    
+      
+    //layout.template = template     
+     
+  dispatch("createElements",template.elements)
+  .then(elements=>{
+    let layout = new dataClasses.Layout(template.layout,"",elements)
+        
+        // capture which row on the page this occupies e.g. if three different layouts had been added this 
+        // would occupy the 3rd row if it had been added last, this is needed so we know when bringing back data
+        // where this data should sit on the page that is contained within the layout
+        
+        layout.index = state.layouts.length
+         
+      
+        //update the store with data about this element
+        dispatch("addLayout", layout )
+  })
+.catch(err=>{
+    console.log("###err", err)
+})
+
+       
+}
 
 
 // when a new layout is updated update it in the Layouts
@@ -150,9 +203,11 @@ export const pageContent_retrieveContent = ({commit,getters,dispatch}, pageName)
         .then(layout => {
 
             commit("setRetrievedLayouts",layout)
-
+            resolve()
         })
-
+        .catch(err=>{
+            reject (err)
+        })
 
     })
 
@@ -173,8 +228,7 @@ export const pageContent_retrieveTextContent = ({commit,getters, dispatch},pageN
         return new Promise(function (resolve, reject){
             dispatch("lambda_GetContentFromS3", dataItems)
             .then( content => {
-                console.log("content = ", JSON.parse(content))
-                
+                               
                 commit("addSavedContentToElementContents",content)
                 resolve()
 

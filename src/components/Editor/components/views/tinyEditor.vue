@@ -45,15 +45,7 @@ export default {
         }
      },
 
-    mounted(){
-        console.log("mounted Called",tinymce)
-        
-  },
-methods:{
-    onChange(){
-        console.log('onchnage Caledd')
-    }
-},
+
  beforeDestroy(){
 
      tinyMCE.execCommand('mceRemoveEditor', true, 'editor');

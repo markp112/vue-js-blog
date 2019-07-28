@@ -33,7 +33,7 @@ const actions = {
 
         if (data){
             
-            dispatch("LambdaretrieveMenuItems",data,{root:true})
+            dispatch("LambdaGetData",data,{root:true})
             .then(cardItems => {
 
                 commit("setCards",cardItems)

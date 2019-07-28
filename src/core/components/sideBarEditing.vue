@@ -52,10 +52,17 @@
          </v-list-tile>
 
         </v-list>
-
-        <!-- show the editor for toolbars -->
-        <compToolBar v-if="activeControl == 'toolbar'"/>
-
+        
+          <v-layout  column wrap justify-center fill-height style="overflow:auto">
+            <!-- show the editor for toolbars -->
+              <toolbar-properties 
+                    v-if="activeControl == 'toolbar'"
+                    :propertyList= "properties"
+                    @onPropertyChange = "onPropertyChanged"
+                    @onTitleTextChange = "onTitleTextChange"
+                    @onToolBarColourChange = "onToolBarColourChange"
+                  />
+          </v-layout>
     
         </v-flex>
         </v-navigation-drawer>
@@ -64,13 +71,13 @@
 
 //import {mapState, mapGetters} from 'vuex'
 
-import toolbar from '../../components/Editor/propertyControls/toolbarProps'
+import toolbar from '../../components/Editor/components/propertyControls/toolBarProps/toolbarProps'
 
 export default {
 
   components:{
 
-      compToolBar : toolbar,
+      "toolbar-properties" : toolbar,
 
 
   },
@@ -128,9 +135,31 @@ export default {
           //to be implemented
 
           this.$store.dispatch("saveChanges")
-        }
+        },
+
+        // respond to user setting a switch
+        onPropertyChanged(data){
+            console.log("--> onPropertyChanged", data)
+
+            
+            //set the control value base on the data assigned
+            this.$store.dispatch("updateProperty",data)
+            
+            //indicate the control has been editied
+           
+            this.$store.dispatch("updateDirtyFlag",data)
+        },
+
+        //respond to the user updating the text for the title on the toolbar
+        onTitleTextChange(data){
+          
+          this.$store.dispatch("updateProperty",data)
+        },
+
+        onToolBarColourChange(data){
+           this.$store.dispatch("updateProperty",data)
+        },
     },
-   
     computed:{
         items(){
             console.log('watch Items called',this.$store.getters.getMenuItems)
@@ -152,11 +181,14 @@ export default {
           
         },
 
+        // retrieve the list of properties to show in the property section of the toolbar
+        properties (){
+            console.log("-->Properties called", this.$store.getters.getProps("toolBarProps"))
+         
+         return this.$store.getters.getProps("toolBarProps")
+        }
     },
 
-    created(){
-console.log("##### --> Created Editing side menu")
-
-    },
+   
 }
 </script>

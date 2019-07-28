@@ -86,9 +86,9 @@ export const addContent = (state, layoutComponent) =>{
 //when retrieving data from S3 we can add the content straight to contents 
 // as once JSON.Parse has converted it it will be in the right format
 export const addSavedContentToElementContents=(state, content)=>{
+
     let data = JSON.parse(JSON.parse(content))
-    console.log("key=",data)
+   
 //not sure why I need the double parse but a first Parse does not create a keyed object
     state.Elementcontents = JSON.parse(JSON.parse(content))
 }
-        

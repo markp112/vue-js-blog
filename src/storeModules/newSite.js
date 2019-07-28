@@ -9,10 +9,10 @@ const defaultState = {
 
     //newSiteData holds content about the new site the user has input
     newSiteData:{
-            site~Name:=""
+            siteName:""
     },
+  
 }
-
 
 const mutations = {
 
@@ -28,7 +28,7 @@ const mutations = {
 
 }
 
-export default = {
+export default  {
 
     state: defaultState,
     mutations,

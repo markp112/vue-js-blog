@@ -81,10 +81,10 @@ export default {
         
         // START: ???????????
         init_instance_callback: (editor) => {
-          editor.on('KeyUp', (e) => {
+          editor.on('KeyUp', () => {
             this.$emit('input', editor.getContent());
           });
-          editor.on('Change', (e) => {
+          editor.on('Change', () => {
             this.$emit('input', editor.getContent());
           });
         },

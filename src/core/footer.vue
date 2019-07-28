@@ -1,6 +1,6 @@
    <template>
         
-    <v-footer :fixed="false" class="py-2" dark height="auto">
+    <v-footer :fixed=true class="py-2" dark height="auto">
          <v-container mx-auto>
             <v-layout wrap>
             <v-flex xs4>

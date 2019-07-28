@@ -1,4 +1,4 @@
-import router from '../router';
+//import router from '../router';
 
 
 import Amplify from 'aws-amplify';
@@ -8,7 +8,7 @@ import auth from '@aws-amplify/auth';
 import API from '@aws-amplify/api'
 
 //configuration file for Amplify
-import config from '../AWS/amplifyConfigure';
+import config from '@/AWS/amplifyConfigure';
 
 
 Amplify.configure(config)
@@ -41,10 +41,7 @@ Amplify.configure(config)
     const mutations = {
         
 
-    authUser(state, userData){
-        state.user.idToken = userData.idToken;
-        state.user.email = userData.email;
-      },
+  
       storeUser(state, userData){
         console.log('store User Called',userData)
 
@@ -53,13 +50,18 @@ Amplify.configure(config)
         state.user.confirmed = userData.confirmed
         state.user.userId = userData.userId
 
-      
+        console.log('state.user',state.user)
+
+        localStorage.setItem('email',userData.email)
+        localStorage.setItem('token',userData.idToken)
+        localStorage.setItem('userId',userData.userId)
+
       },
       userConfirmed:(state, confirmed) =>{
         state.user.confirmed = confirmed
       },
       clearAuthData(state){
-      
+        console.log("--> ClearAuthData Called")
       
         state.dashboardOpen = false;
         state.user = {};
@@ -261,7 +263,28 @@ Amplify.configure(config)
     //})
   }
   },
-        
+
+  //
+  //create a dummy login if offline so the site csn still function
+  //
+  offLineLogin({commit}){
+    
+
+                var userData = {
+               //   userId: res.username,
+                  email: "mark@text",
+                  cognitoUserName:"mark",
+                  confirmed: true,
+                  idToken: "1234",
+                  
+                } 
+                commit('storeUser', userData);
+                
+
+    
+      return ("success")
+
+  },
         
   
   //---------------------------------------------------------------------------
@@ -269,8 +292,9 @@ Amplify.configure(config)
   //---------------------------------------------------------------------------
     login({commit,dispatch},authData){
       
-       console.log('Login called ',authData)
-
+       console.log('-->Login called ',authData)
+        
+      
        return new Promise(function (resolve,reject){
         
           auth.signIn(authData.email, authData.password)
@@ -283,15 +307,25 @@ Amplify.configure(config)
                 
                 console.log('data =',data)
                
+                const expires =  data.accessToken.payload.exp
+
                 var userData = {
                //   userId: res.username,
                   email: authData.email,
-                  cognitoUserName:res.username,
+                  cognitoUserName: res.username,
                   confirmed: true,
                   idToken: res.username,
-                  
+                  expireTime : expires
                 } 
                 commit('storeUser', userData);
+
+                const now = new Date();
+               
+                const expirationDate = new Date(now.getTime() + expires * 1000);
+                
+                localStorage.setItem('expiresIn',expirationDate)  
+
+                dispatch('setLogOutTimer',expirationDate); 
 
               
                 resolve('success')
@@ -308,13 +342,13 @@ Amplify.configure(config)
   
           } )
   
-    })
-    },
+    })}  ,
     //---------------------------------------------------------------------------
     logout({commit}){
       
       commit('clearAuthData');
-      router.replace('/signin');
+
+      this.$router.replace('/signin');
 
       localStorage.removeItem('token');
       localStorage.removeItem('expiresIn');
@@ -324,92 +358,125 @@ Amplify.configure(config)
     },
     //---------------------------------------------------------------------------
     tryAutoLogin({commit}){
-      const token=localStorage.getItem('token');
-  
+
+      console.log("--> tryAutoLogin")
+      const token = localStorage.getItem('token');
+      const email = localStorage.getItem('email');
+
+      console.group
+      console.log("token = ", token)
+      console.log("email= ", email)
+      console.groupEnd
+
       if (!token){
-        return
+        return false
       }
-       const expirationDate=localStorage.getItem('expiresIn') ;
-       const now =new Date();
+       const expirationDate = localStorage.getItem('expiresIn') ;
+       const now = new Date();
        
        if (now >= expirationDate){
-        return 
+         
+        console.log("Expired.....")
+
+         commit('clearAuthData');
+        
+         return false
        }
-       const userId=localStorage.getItem('userID');
-  
-       commit('authUser',{
-              idToken:token,
-              userId:userId
+
+       const userId = localStorage.getItem('userId');
+       
+       console.log("userID = ",userId)
+       
+       commit('storeUser',{
+              idToken : token,
+              userId : userId,
+              email : email,
+              confirmed : true
               }
+
             )
+          return true
     },
      //---------------------------------------------------------------------------
-     storeUser({commit,state},userData){
-      if (!state.idToken){
-        return;
-      }
-  
-      axios.post('/users.json'+ '?auth=' + state.idToken,userData)
-        .then (()=>{
-      
-             commit('storeUser',userData) 
-                })
-        .catch(err=> console.log(err))
-  
-    },
+     
     
-    fetchUser({state}){
-      if (!state.idToken){
-        return
-      }},
+    
     //---------------------------------------------------------------------------
     // Operational functions
     //---------------------------------------------------------------------------
-    
-    setDashboardOpen({commit})
-    {
-        console.log('Set Dashboard open called')
-      commit('OpenDashboard')
-  },
-
-  setDashboardClosed({commit})
-    {
-      commit('dashboardClosed')
-  },
+          
+    setLogOutTimer({commit},expirationTime){
+        setTimeout(()=>{
+          
+          commit('clearAuthData');
+        }, expirationTime * 1000 )
+      },
      
     }
+
+
     //---------------------------------------------------------------------------
+    // getters
+    //---------------------------------------------------------------------------
+    
     const getters = {
         user(state){
             return state.user;
          },
-         userID(state){
-           
-           return state.user.idToken;
+         userId(state){
+           if (state.user.idToken == undefined){
+              return 'bf5f4f2f-6faa-4ed5-b53c-6b8f8cce9d26'
+           }else{
+              return state.user.idToken;
+           }
          },
-         isAuthenticated(state){
-     
+         isAuthenticated(state,rootState){
+          
+
+
+          const offline = rootState.isOffline
+
+          if(offline){
+
+            return true
+
+          }else{
             
-           return state.user.idToken !==null  || state.user.idToken !==''
-   
+           return state.user.idToken !== null  || state.user.idToken !== '' || state.user.idToken !== undefined
+          }
          },
     
-         userName:state =>{
-             if(state.user.userName !== undefined || state.userName !== null){
+         userName: state =>{
+             if(state.user.userName !== undefined && state.userName !== null){
                  
                 return state.userName
 
              }else{
+               return "Mark Phillips"
+             }
 
-                if(state.user.email){
+            
 
-                    return state.user.email
+             },
+         email: state =>{
+                if(state.email !== undefined && state.email !== null ){
+                  return state.email
+                }else{
+                  return "mark.phillips1965@gmail.com"
                 }
 
-             }
+             },
+        
+        userIdSiteId: (state,rootState) =>{
+ 
+          console.log("RootState",rootState)
+
+              return  state.user.idToken + "" + rootState.getSiteId
+        },
          }
         
-    }
+    
+      
 
     export default {
       state : defaultstate,
