@@ -3,15 +3,9 @@
     <v-card width="200" color="error darken-2"  elevation="15" >
         
         <v-card-title primary-title background-color="grey darken-1">
-            <v-flex xs2 align-content-start>
-                Error    
-            </v-flex>
+            <close-Button title="Error" @click = "onCloseClick"></close-Button>
             
-            <v-flex xs10 align-content-end>
-            <v-btn flat icon small color="white" outline @click="onCloseClick">
-                <v-icon small>close</v-icon>
-            </v-btn>    
-            </v-flex>
+           
             
         </v-card-title>
         <v-card-text >
@@ -22,6 +16,9 @@
 </template>
 
 <script>
+
+import closeButton from './baseCloseButton'
+
 export default {
 
     props:{
@@ -30,6 +27,11 @@ export default {
             default : ""
         }
     },
+
+    components:{
+            "close-Button" : closeButton,
+    },
+
     methods:{
         onCloseClick(){
             

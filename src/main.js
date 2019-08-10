@@ -14,13 +14,15 @@ import App from './App.vue'
 import store from './store'
 import tinyEditor from './core/components/tinyEditor' //loads the template file
 
+
+
 Vue.config.productionTip = false
 
 Vue.component('vue-tinymce', tinyEditor)
 
 Vue.use(vueRouter)
 Vue.use(Vuex)
-//Vue.use(Vuetify)
+
 
 
 

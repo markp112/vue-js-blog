@@ -145,13 +145,17 @@ export default {
 methods:{
     //
     // process the toggling of the switch
-    //
+    // model =
+     /* let data ={
+                control:   Name of the property to act on
+                value:     Value to assign to control T/F
+            } */
     onToggleSwitch(model){
       
       const data = {
            control: this.thisControl,
            property: model,
-           value: true
+           value: model.value
        }
 
       this.$emit("onPropertyChange",data)
@@ -173,7 +177,8 @@ methods:{
     },
 
   onButtonClick(model){
-    
+    //to be built
+    console.log("--> onButtonClick", model)
   },
     
 },

@@ -14,6 +14,7 @@
 <v-container >
     <base-DisplayError :errorMessage = "errorMessage" @closeClick="onErrorCloseClick" v-if="showError"></base-DisplayError>
       
+        
       <v-toolbar 
         :fixed = "isFixed"
         :dark = "isDark"
@@ -24,28 +25,7 @@
         :flat = "isFlat"
         
       >
-        <v-tooltip right>
-          <template v-slot:activator = "{ on }">
-            <v-btn 
-                  
-                  v-if="hasEditButton"
-                  fab
-                  absolute
-                  small
-                  color = "secondary"
-                  top
-                  left
-                  ripple
-                  darken-1
-                  @click = "onToolBarEditButtonClicked"
-                  v-on = "on"
-                  elevation-10
-                  >
-                  <v-icon color="tertiary">edit</v-icon>
-              </v-btn>
-            </template>
-            <span>Edit toolbar settings</span>
-        </v-tooltip>
+      
 
         <v-toolbar-title > {{ titleText }} </v-toolbar-title>
 
@@ -105,7 +85,7 @@ const   TOOLBAR_BUTTONS     = "toolbarButtons"
 
 
 export default {
-      name : "buttonEditor",
+      name : "userToolBar",
 
       props : {
           hasEditButton:{
@@ -156,52 +136,7 @@ onErrorCloseClick(){
   this.showError = false
 },
 
-   //loads the toolbar properties editor in the side bar
-   // user has clicked the edit button on the toolbar 
-    onToolBarEditButtonClicked(){
-        console.log("--> toolBarClicked Called")
-             
-        let  isAlreadyLoaded = this.$store.getters.getIsPropLoaded(this.controlToActivate)
-        
-        //console.log("isAlreadyLoaded = >",isAlreadyLoaded)
-
-        if(!isAlreadyLoaded){
-              
-              const data = {
-                  item:"editors",
-                  subItem:"toolBar",
-                  key: this.controlToActivate
-                  }
-
-            this.$store.dispatch("retrieveNonUserProperties",data)
-            .then(() =>{
-                  //console.log("toolbar Created result returned")
-            
-                  const data ={
-                      controlName: this.controlToActivate,
-                      value: true
-                  }
-                  this.$store.dispatch("updateIsPropLoaded",data)
-              
-            
-            })
-
-            }
-
-
-        // if clicked again deselect
-        let component = "toolbar"
-
-            // show the editor component for the toolbar
-        const data = {
-            component : component,
-            item : "editors",
-            subItem : "toolBar"
-        }
-
-        this.$store.dispatch ("showProperties", data)
-    },
-
+  
 //
 // retrieve the properties for the button editor
 // user has clicked the properties menu item on the hover menu for buttons on the toolbar
@@ -213,7 +148,7 @@ onBtnMenuClicked(item){
              
         let  isAlreadyLoaded = this.$store.getters.getIsPropLoaded(BUTTON_PROPERTIES)
         
-        const showEditor = true
+        let showEditor = true
 
         // don't reload the button properies if they have already been loaded
         // avoids repeated calls to Lambda
@@ -272,12 +207,15 @@ onButtonPropertyChange(property){
     key2  : property.key,
     value : property.value
   }
-  try{
-    this.$store.dispatch("updateToolBarButtonProperty",data)
-  }
-  catch{ err=>{
-    this.errorMessage = err.msg + "properties" +err.parameters + err.error
-    this.showError = true
+
+  try {
+  
+        this.$store.dispatch("updateToolBarButtonProperty",data)
+    }
+  catch { err =>{
+      
+      this.errorMessage = err.msg + "properties" +err.parameters + err.error
+      this.showError = true
 
   }
     

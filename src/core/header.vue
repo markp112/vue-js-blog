@@ -5,10 +5,11 @@
             :clipped-left = "clipped"
             color="primary">
            
-            <v-btn icon @click.stop = "showSideBarClicked" color="accent">
+            <v-btn icon @click.stop = "onHomeClicked" color="accent">
                 <v-icon >menu</v-icon>
             </v-btn>
             
+           
             <template v-slot:extension>
               <v-layout row align-center justify-center fill-height>
               
@@ -26,7 +27,11 @@
             <v-toolbar-title class="white--text"
                 v-text="siteName">
             </v-toolbar-title>
-            
+             <v-spacer></v-spacer>
+            <v-icon large 
+                    elevation-10 
+                    color="accent"
+                    @click="onSettingsClicked" >settings</v-icon>
          </v-toolbar>
       
       
@@ -83,6 +88,10 @@ export default {
         },
       
 
+      onHomeClicked(){
+        this.$router.push("/")
+      },
+
         onPagesClick(){
             console.log('onPagesClick called')
             
@@ -101,7 +110,13 @@ export default {
               this.$router.push(data.route)
 
             }
-        }
+        },
+
+        //user has clicked on setttings
+        // navigate to settings page
+        onSettingsClicked(){
+          this.$router.push("/settings")
+        },
     }
     }
 

@@ -9,6 +9,7 @@ import signUp from '@/components/auth/signUp.vue'
 import signIn from '@/components/auth/signIn.vue'
 import sites from '@/core/views/sites.vue'
 import start from '@/core/views/letsGetStarted.vue'
+import settings from '@/components/settings/views/settings'
 
 //import sandpitLayout from './components/Editor/sandpit/sandpitLayout'
 
@@ -27,6 +28,7 @@ const routes = [
   { path: '/start', component: start },
   { path: '/newSite', component: newSite},
   { path: '/master', component: templateMaster},
+  { path: '/settings', component: settings}
 
 
 

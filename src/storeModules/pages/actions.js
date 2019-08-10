@@ -36,60 +36,9 @@
         //
         // retrievePageDetail - retrieves the details about the current page the user has clicked on
         // from the list of pages in their site
-        //
-        export const       retrievePageDetailzz = ({ commit, dispatch, rootState}, page)=>{
-            
-            console.log("retrievePageDetail Called",page)
-
-            return new Promise(function (resolve, reject){
-                
-                const siteId = rootState.moduleSites.siteId
-                
-                const userId = rootState.moduleUsers.user.idToken
-                
-                // retrieve the basic details for this page
-                const dataItems = {
-                    item : userId + siteId + "pageDetails",
-                    subItem : page
-                }
-                
-                dispatch("LambdaGetData",dataItems,{root:true})
-                .then( pageData =>{
-                
-                    if(pageData !== undefined)     {
-                                            
-                        commit("setPageData", pageData)
-                    
-                        if(pageData.hasOwnProperty('toolBarProps')){
-
-                            
-                            dataItems.item = userId + siteId
-                            dataItems.subItem = "mainToolBar"
-                            // retrieve toolBarProperties
-                            dispatch("LambdaGetData",dataItems,{root:true})
-                            .then (toolbarProps =>{
-                                dispatch("updateAllToolBarProps", toolbarProps)
-                            }) 
-                            
-                        }
-                    
-                    resolve( pageData.template)
-
-                    }else{
-                        //No data has been saved
-                        const err = {err:"pageData has no content", statusCode:1002}
-                        reject (err)
-                    }
-                
-                })
-                .catch(err =>{
-                    console.log('error from dynamodb', err);
-                    reject (err)
-                })
-            })
-
-        
-        }
+        // retrieve the page layout
+        // properties for the toolbar
+        // text conntent
         
         export const    retrievePageDetail = ({state, getters,dispatch}, page)=>{
             
@@ -103,20 +52,19 @@
                     item : getters.userIdSiteId + "pageDetails",
                     subItem : page
                 }
-                console.log("dataItems =", dataItems)
+               // console.log("dataItems =", dataItems)
                 
                 dispatch("getPageDetails", dataItems)
-                .then(dispatch("retrieveProperties", MAINTOOLBAR,{root:true}))
-                .then(dispatch("pageContent_retrieveContent",page,{root:true}))
-                .then(dispatch("pageContent_retrieveTextContent",page,{root:true}))
-                .then(()=>{
-                    resolve( state.pageData.template)
+                    .then(dispatch("retrieveProperties", MAINTOOLBAR,{root:true}))      //retreive content for the users Navbar at the top of the page (toolbar)
+                    .then(dispatch("pageContent_retrieveContent",page,{root:true}))
+                    .then(dispatch("pageContent_retrieveTextContent",page,{root:true}))
+                    .then(()=>{
+                    //return the template name for this page
+                        resolve( state.pageData.template)
                 })   
-                 
-                    
-             
+                              
                 .catch(err =>{
-                    console.log("Error ",err)
+                    console.log("retrievePageDetail--> Error ",err)
                     reject(err)
                 })
                 

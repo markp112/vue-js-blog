@@ -46,7 +46,7 @@ const defaultState = {
     // can be edited by the user, if one has been edited its value will be true
     isControlDirty:{
         toolBarProps: false,
-        buttonProps : false,
+        
     },
     
     //indicates which component in the edit is active so the appropriate 

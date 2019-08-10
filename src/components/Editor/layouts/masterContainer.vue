@@ -8,7 +8,7 @@
                           
                             @onMenuClicked = "onMenuClicked"
                             
-                            @onEditClicked = "edit = !edit"
+                            @onEditClicked = "onEditClick"
                             @onAlignLeftClicked = "alignLeft"
                             @onAlignRightClicked = "alignRight"
                             @onAlignCentreClicked = "alignCentre"
@@ -19,11 +19,12 @@
             
             <v-layout row v-bind = "layoutAttributes" >
                            
-                    <component :is="componentId" 
+                    <component  :is="componentId" 
                                 :element = "localElement" 
                                 :isEditing = "edit" 
                                 :index="index"
-                                @textEditorHasContent="isMenuSelected = true"
+                                @textEditorHasContent = "isMenuSelected = true"
+                                @inEditor = "edit = false"
                                 ></component>    
                 
             </v-layout>
@@ -116,6 +117,11 @@ import dataClasses from '../../../dataClasses/pageSection'
    
    methods:{
 
+       onEditClick(){
+           this.edit = true
+           
+       },
+
        onToolBarClicked(isSelected){
           
            this.isControlSelected = !this.isControlSelected
@@ -173,6 +179,9 @@ import dataClasses from '../../../dataClasses/pageSection'
 
    },
    created(){
+       console.log("this.element.type",this.element)
+   
+        
        switch (this.element.type ){
            case dataClasses.types.text:
                this.componentId = "textComponent"

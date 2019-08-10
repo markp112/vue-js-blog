@@ -152,7 +152,7 @@ const actions = {
 
     },
 
-    retrieveListOfSites: async({commit, dispatch, rootState}) => {
+    retrieveListOfSites: ({commit, dispatch, rootState}) => {
 
         console.log('retrieveListOfSites')
 
@@ -163,18 +163,24 @@ const actions = {
             email : userModule.user.email,
         } 
 
-        const resultProfile  = await dispatch("LambdaGetUsersListofSites",data,{root:true})
-        .then( sites =>{
-
-            commit("setListofSites",sites)
-            return 
-        }
+            return new Promise(function(resolve,reject){
+                
+                dispatch("LambdaGetUsersListofSites",data,{root:true})
+                .then(sites=>{
+                    
+                    commit("setListofSites",sites)
+                    resolve()
+                })
+           
+                .catch(err=>{
+                    console.log("### Error getting site List",err)
+                    reject(err)
+                })
         
-
-        )
-        .catch(err=>{
-            console.log("Failed to create new website", err)
-        })
+        
+            })
+     
+        
 
 },
 
@@ -187,6 +193,7 @@ updateSiteId:({commit},siteId)=>{
 const getters = {
 
     getSiteList: state =>{
+        console.log("-->getSiteListCalled",state.siteList)
         return state.siteList
     },
     getSiteId: state =>{

@@ -11,11 +11,8 @@
 
     <v-card width="100%">
 
-            <component :is="componentId" v-model = "myContent" 
-                        :content = "text" 
-                        @contentChanged = "onChange">
-            </component>
-    
+            <editor-content v-if="!showEditor" :content = "text"></editor-content>
+            <tiny-editor   v-else  :content = "text" @onCloseClick="onEditorCloseClick"></tiny-editor>
     </v-card>
 
         
@@ -25,7 +22,7 @@
 
 <script>
 
-import  Editor from './tinyEditor'
+import  tinyEditor from './tinyEditor'
 import  editorContent from './editorContent'
 
 
@@ -52,8 +49,8 @@ export default {
 
     components:{
 
-        editor: Editor,
-        editorcontent : editorContent,
+        "tiny-editor": tinyEditor,
+        "editor-content" : editorContent,
 
     },  
 
@@ -62,7 +59,7 @@ export default {
                         
             text : "",
             isEditorActive : false,
-            componentId : "editorcontent",
+            
             key: "###L"+ this.index + "E" + this.element.number + "###"
 
         }
@@ -70,66 +67,47 @@ export default {
     created(){
 
         console.log("Created text Component called Element= ",this.element)
-        if(this.element !== undefined){
-            console.log("this.$store",this.$store)
+       
+       if(this.element !== undefined){
+           // console.log("this.$store",this.$store)
             
             this.text = this.$store.getters.getElementContents(this.key)
-           
-           if (this.text !==""){
+            
+            //if text is still undefined call again incase load is slow
+            /// not ideal but until find a more efficient way to do this.
+            if(this.text == undefined){
+                this.text = this.$store.getters.getElementContents(this.key)
+            }
+           ///flag so toolbar can updated to show editor button active
+           if (this.text !== ""){
                 this.$emit("textEditorHasContent")
             }
         }
     },
 
-    computed:{
-       
-       myContent (){
-            console.log("-->Mycontent Called")
-           this.text = this.$store.getters.getElementContents(this.key)
-            return  this.text
-            
-        }
-    },
+  computed:{
+      showEditor(){
+          return this.isEditing
+      },
+  },
 
-    watch:{
-        isEditing(){
-            //console.log("edit clicked",this.isEditing)
-            this.componentId = (this.isEditing ) ? "editorcontent" : "editor"
-           
-           console.log("element=", this.element)
-
-            //editorContnet shows the content we have created
-
-           /*  if(this.componentId == "editorcontent"){
-                console.log("text=",this.text)
-                this.element.content = this.text
-
-                //mark element as being changed
-                this.element.isDirty = true
-
-                const elementComponent = {
-                    
-                    element : this.element,
-                    index : this.index
-                }
-                
-                console.log("isEditing - elementComponent = ",elementComponent)
- */
-               // this.$store.dispatch("updateElement", elementComponent)
-            //}
-        }
-    },
+  
     methods:{
 
-        onChange(v){
-            //  console.log("onchange Called", v)
-            this.text = v
-            const contentData ={
+        onEditorCloseClick(content){
+            this.text =  content
+             const contentData ={
                 key:this.key,
-                content: v
+                content: content
             }
             this.$store.dispatch("updateContentText",contentData)
-        }
+            this.isEditing = false
+            //flag state change up to edit tool bar to reset the "isEditing" value to false
+            // otherwise no new event is fired when the edit button is clicked as its value is already true
+            this.$emit("inEditor")
+        },
+
+      
 
     }
 }

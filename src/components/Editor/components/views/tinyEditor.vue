@@ -1,17 +1,22 @@
 <template>
       
-      <div>
+      <div >
+         
+          <close-Button backColour="teal" @click="onCloseClick"></close-Button>
+        
           <vue-tinymce  id="editor" v-model="localText"></vue-tinymce>
      </div>
 
 </template>
 
 <script>
-
+import closeButton from '../../../base/baseCloseButton'
 import  Editor from 'vue-tinymce-editor'
+import { close } from 'fs';
 
 export default {
-   
+    name :"textEditor",
+    
     props:{
         content : {
             type: String,
@@ -23,6 +28,9 @@ export default {
         },
     },
 
+    components:{
+            "close-Button": closeButton
+    },
      
 
      data(){
@@ -33,7 +41,7 @@ export default {
                     default: 'insert | undo redo | formatselect | styleselect fontselect fontsizeselect |'+
                             ' bold italic underline forecolor backcolor | link image media |'+
                             ' alignleft aligncenter alignright alignjustify |'+
-                            ' bullist numlist outdent indent | removeformat | help | code | save'+
+                            ' bullist numlist outdent indent | removeformat | help | code |'+
                             ' emoticons'
             },
             plugins : [
@@ -44,7 +52,11 @@ export default {
           
         }
      },
-
+methods:{
+    onCloseClick(){
+        this.$emit("onCloseClick",this.localText)
+    }
+},
 
  beforeDestroy(){
 

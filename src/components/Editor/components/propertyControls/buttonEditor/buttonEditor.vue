@@ -7,14 +7,8 @@
 
         >
         <v-card-title >
-         
-          <v-flex xs12 align-content-end>
-             Button Editor
-            <v-btn outline icon color="white" @click ="onCloseClick">
-              <v-icon >close</v-icon>
-            </v-btn>
-            
-          </v-flex>  
+            <close-Button title="Button Editor" @click="onCloseClick"></close-Button>
+        
         </v-card-title>
         
 
@@ -47,8 +41,8 @@
             </template>
           
 
-         <template v-else-if="item.propControlType == 'colourPicker'" z-index="25">
-              <v-expansion-panel popout z-index="25" >
+         <template v-else-if="item.propControlType == 'colourPicker'" z-index="40">
+              <v-expansion-panel popout z-index="40" >
 
                 <v-expansion-panel-content>
                   <template v-slot:header>
@@ -86,6 +80,7 @@
 
 <script>
 
+import closeButton from "../../../../base/baseCloseButton"
 import textProperty from '../base/baseProperty/textProperty'
 import baseSwitch from '../base/baseProperty/baseSwitch'
 import colourPicker from '../colourPicker/colourPicker'
@@ -96,6 +91,7 @@ export default {
 
   components:{
 
+      "close-Button"  : closeButton,
       "text-property" : textProperty,
       "base-Switch"   : baseSwitch,
       "colour-Picker" : colourPicker

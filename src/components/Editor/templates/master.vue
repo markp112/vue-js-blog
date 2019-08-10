@@ -2,27 +2,15 @@
     <v-container grid-list-xs grey>
 
         <v-layout wrap row justify-center>
-            <v-flex xs12 elevation-13>
+            <v-flex xs12 >
                
-                   <v-toolbar background-color="grey darken-4" dense>
+                   <v-toolbar color="grey darken-4" dense elevation-25>
                         
-                         <v-menu open-on-hover bottom ripple offset-y>
-                                <v-btn color="primary" dark slot="activator">Layouts</v-btn>
-                                
-                                <v-list>
-                                    <v-list-tile v-for="item in pageLayouts" :key="item.template" @click="addLayoutElement({layout:item.template,elements:item.elements})">
-                                        <v-list-tile-title>{{ item.menuText }}</v-list-tile-title>
-                                    </v-list-tile>
-                                    <v-divider></v-divider>
-                                   
-                                    <v-list-tile @click="removeSelectedLayout">
-                                           <v-list-tile-title>
-                                               <v-icon>delete</v-icon>
-                                               Delete Layout</v-list-tile-title>
-                                    </v-list-tile>
+                      
+                    <editor-Menu :menuItems="pageLayouts" title="Layouts" @onMenuClicked="onLayoutsMenuClicked"></editor-Menu>
 
-                                </v-list>
-                            </v-menu>
+                     <editor-Menu :menuItems="toolBarMenu" title="Toolbar" @onMenuClicked="onToolBarMenuClicked"></editor-Menu>
+
                 </v-toolbar>
             </v-flex>
             <v-flex xs12>
@@ -74,6 +62,8 @@
 
     import tbComponent from '../../Editor/components/views/userToolbar'
 
+    import editorMenu from '../components/propertyControls/base/baseProperty/baseEditorMenu'
+
 //Layouts - TODO componentise
     import fullWidth from '../layouts/fullWidth'
     
@@ -90,6 +80,8 @@
 
             toolbarComponent: tbComponent,
             
+            "editor-Menu" : editorMenu,
+
             fullWidth,
             
             WLNR,
@@ -130,9 +122,22 @@
                     template:"L4C4R4",
                     elements: 3
                 },
+                
 
+                
               
             ],
+
+            
+            toolBarMenu:[
+                {
+                    icon:"",
+                    menuText:"Edit Properties",
+                    
+                    
+                }
+            ],
+
 
             // activated when control is clicked to be used to remove a layout component
             isSelected:false,
@@ -158,6 +163,12 @@
             // template contains the name of the layout(component) 
             //and the number of elements with the layout
 
+            onLayoutsMenuClicked(item){
+               
+                this.addLayoutElement({layout:item.template,elements:item.elements})
+            },
+
+
            addLayoutElement(template){
                console.log(" -->addLayoutElement Called", template)
 
@@ -165,38 +176,68 @@
                 this.$store.dispatch("createLayout", template )
       
             },
+            
   
+        //remove a layout from the page this is to be implemented
          removeSelectedLayout(){
-
            //TO DO:implement removal of a layout section
           },
 
+        onToolBarMenuClicked(){
+            console.log("--> toolBarClicked Called")
+            this.activateToolBarPropertyEditor()
+               
+        },
         
+       activateToolBarPropertyEditor (){
+             console.log("--> toolBarClicked Called")
+             
+                let  isAlreadyLoaded = this.$store.getters.getIsPropLoaded(this.controlToActivate)
+                
+                //console.log("isAlreadyLoaded = >",isAlreadyLoaded)
+
+                if(!isAlreadyLoaded){
+                    const CONTROLTOACTIVATE ="toolBarProps"
+                    const data = {
+                        item:"editors",
+                        subItem:"toolBar",
+                        key: CONTROLTOACTIVATE
+                        }
+
+                    this.$store.dispatch("retrieveNonUserProperties",data)
+                    .then(() =>{
+                        //console.log("toolbar Created result returned")
+                    
+                        const data ={
+                            controlName: CONTROLTOACTIVATE,
+                            value: true
+                        }
+                        this.$store.dispatch("updateIsPropLoaded",data)
+                    
+                    
+                    })
+
+                    }
+
+
+                // if clicked again deselect
+                let component = "toolbar"
+
+                    // show the editor component for the toolbar
+                const data = {
+                    component : component,
+                    item : "editors",
+                    subItem : "toolBar"
+                }
+
+                this.$store.dispatch ("showProperties", data)
+            },
+
         },
 
         computed: {
 
-            checkToolBar: function () {
-
-                console.log("check toolBar called")
-                const property = {
-                    control: "toolBarProps",
-                    property: "isFlat"
-                }
-
-                //switch between a flat toolbar vs an elevated toolbar
-                let value = this.$store.getters.getProperty(property)
-
-                console.log("Check Toolbar Value = ", value)
-
-                if (value) {
-                    console.log("returning Flat Toolbar", value)
-                    return "toolbarComponentFlat"
-                } else {
-                    console.log("returning Toolbar", value)
-                    return "toolbarComponent"
-                }
-            },
+         
 
             layoutElements : function(){
                               

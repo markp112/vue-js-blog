@@ -10,7 +10,7 @@ const CONTENTFILENAME = "content.txt"        // default filename that holds text
 //creates the placeholders for each element within a layout
 export const   createElements = ({state},number)=>{
 
-    console.log("--> createElements called",number)
+    //console.log("--> createElements called",number)
    
     let elements=[]
          return new Promise(function(resolve,reject){
@@ -78,6 +78,7 @@ export const updateLayouts = ({commit}, layoutComponent) => {
     commit("updateLayout", layoutComponent)
 
 }
+
 export const addLayout = ({commit}, layoutComponent) => {
     
     console.log("--> addLayout",layoutComponent)
@@ -150,13 +151,13 @@ export const pageContent_saveContent = ({  state,  dispatch}, siteData) => {
 
         //write layouts Record to Dynamodb
         const dataItems = {
-            key: siteData.item(),
+            key: siteData.key(),
             subKey: LAYOUTS + siteData.pageName,
             data: layouts
         }
 
         dispatch("lambda_putDynamodb", dataItems, { root: true})
-            .then(result => {
+            .then(() => {
 
                 //write text to S3
                 const s3Data = {
@@ -187,7 +188,7 @@ export const pageContent_saveContent = ({  state,  dispatch}, siteData) => {
 // retrieve the current page Layouts and associated content, including text and images
 // Expects the name of the Page we are retrieving content for
 // this recreates the layout -- content needs to be added seperately
-//
+// this only retrieves the type of content but not the content itself
 export const pageContent_retrieveContent = ({commit,getters,dispatch}, pageName)=>{
     
     console.log("--> pageContent_retrieveContent",pageName)
@@ -199,10 +200,12 @@ export const pageContent_retrieveContent = ({commit,getters,dispatch}, pageName)
 
     return new Promise(function(resolve, reject){
 
-        dispatch("LambdaGetData",dataItems,{root: true})
+        dispatch("LambdaGetData", dataItems,{root: true})
         .then(layout => {
-
+      //console.log('pageContent_retrieveContent', layout)
             commit("setRetrievedLayouts",layout)
+
+            commit("createEmptyContentPlaceholder")
             resolve()
         })
         .catch(err=>{
@@ -218,25 +221,35 @@ export const pageContent_retrieveContent = ({commit,getters,dispatch}, pageName)
 // pageContent_retrieveTextContent 
 // read the text file which contains the texxt content and populate the elements held in the layouts
 //
-export const pageContent_retrieveTextContent = ({commit,getters, dispatch},pageName)=>{
+export const pageContent_retrieveTextContent = async ({commit,getters, dispatch},pageName)=>{
 
         const dataItems ={
            s3BucketName : DEFAULTS3CONTENTBUCKET,
            key : "users/" + getters.userId + "/" + getters.getSiteId + "/" + pageName + "/" + CONTENTFILENAME
 
         }
-        return new Promise(function (resolve, reject){
-            dispatch("lambda_GetContentFromS3", dataItems)
-            .then( content => {
-                               
-                commit("addSavedContentToElementContents",content)
-                resolve()
+       // Promise(function (resolve, reject){
+           try{
+                 let content = await dispatch("lambda_GetContentFromS3", dataItems)
+            //.then( content => {
+                 //add the text to the array               
+                commit("addSavedContentToElementContents", content)
+            //    resolve()
 
-            })
-        })
+            //})
+           }
+           catch{err=>{
+                console.log("### pageContent_retrieveTextContent Error ", err)
+                return err
+           }}
+           // .catch(err=>{
+              //  console.log("### pageContent_retrieveTextContent Error ", err)
+               // reject (err)
+            //})
+        //})
         
 }
-
+/* 
 export const parseContent = ({commit},content)=>{
 
   let index = content.indexOf("###L")
@@ -279,4 +292,4 @@ export const parseContent = ({commit},content)=>{
 
   }
 
-}
+} */

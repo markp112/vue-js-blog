@@ -2,6 +2,8 @@
 //mutations for hanlding the layouts
 //=================================================================
 import dataClasses from '../../dataClasses/pageSection'
+import {getElementKey} from '../../dataClasses/pageSection'
+
 
  export const   clearLayouts=(state) => {
         state.layouts = [];
@@ -28,7 +30,8 @@ export const setRetrievedLayouts = (state, mylayouts) => {
     for (let i=0; i < mylayouts.length; i++ ){
         
         let lay = mylayouts[i];
-        lay.elements.content =""
+        console.log("lsy=",lay)
+        lay.elements.content = ""
         let layout = new dataClasses.Layout(lay.template, lay.s3Bucket, lay.elements, lay.index)
         
         state.layouts.push(layout)
@@ -59,6 +62,7 @@ export const setRetrievedLayouts = (state, mylayouts) => {
         console.log("state.layouts",state.layouts)
         state.layouts[elementData.layout-1].elements[elementData.element-1].content = elementData.content
     }
+
 //===========================================================================================
 // Mutations for handling text
 //===========================================================================================
@@ -68,6 +72,30 @@ export const updateContent = (state, contentData) => {
         state.Elementcontents[contentData.key] = contentData.content
 
 }
+
+// iterate through the layouts and elements and creat empty element placeholders in elementContent
+// where the element type is text
+export const createEmptyContentPlaceholder=(state) =>{
+
+console.log("--> createEmptyContentPlaceholder",state.layouts,state.layouts.length)
+console.log("layout eleemnt",state.layouts[0].elements)
+    for (let l=0; l < state.layouts.length; l++){
+        
+        let layout = state.layouts[l]
+        for (let e=0 ; e < layout["elements"].length; e++){
+            let element = layout.elements[e]
+            console.log("element",element)
+
+
+            if(element.type == dataClasses.types.text){
+                
+                let key = getElementKey(layout.index, element.number)
+                state.Elementcontents[key] = ""
+            }
+        }
+    } 
+    console.log("state.Elementcontents",state.Elementcontents)
+}
 //
 /// expects layout Component with n elements - initialise our keys in 
 // ElementContents to support two way binding
@@ -75,10 +103,12 @@ export const updateContent = (state, contentData) => {
 export const addContent = (state, layoutComponent) =>{
 
     const index = layoutComponent.index
-    const keyLayout =  "###L" + index +"E"
+   
+
     for(let element of layoutComponent.elements){
-        const key = keyLayout + element.number + "###"
+       
         
+        const key = getElementKey(index,element.number)
         state.Elementcontents[key] = ""
     }
 
@@ -87,7 +117,7 @@ export const addContent = (state, layoutComponent) =>{
 // as once JSON.Parse has converted it it will be in the right format
 export const addSavedContentToElementContents=(state, content)=>{
 
-    let data = JSON.parse(JSON.parse(content))
+    //let data = JSON.parse(JSON.parse(content))
    
 //not sure why I need the double parse but a first Parse does not create a keyed object
     state.Elementcontents = JSON.parse(JSON.parse(content))

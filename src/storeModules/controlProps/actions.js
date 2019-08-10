@@ -1,20 +1,24 @@
+import { button } from "@aws-amplify/ui";
 
 
 export const     updateProperty = ({commit,dispatch}, item)=>{
 
         commit("setProperty", item)
-        dispatch("updateDirtyFlag",buttonProps)
+        dispatch("updateDirtyFlag",item.control)
+    
     }
 
     
 /// retireve properties from dynamoddb which are user specific
+//PageName - the name of the page the user has requested this is used to
+// tag onto the Key to create a unique ID per page
 export const   retrieveProperties=({commit,getters,dispatch}, pageName)=>{
 
         console.log("--> Retrieve Properties Called -->", pageName)
         
         const dataItems ={
-            subItem: pageName,
-            item : getters.userIdSiteId
+            subItem : pageName,
+            item    : getters.userIdSiteId
 
         }
         return new Promise(function(resolve, reject){
@@ -23,8 +27,8 @@ export const   retrieveProperties=({commit,getters,dispatch}, pageName)=>{
 
             .then(res =>{
                 const data ={
-                    key:pageName,
-                    attributes: res
+                    key :   pageName,
+                    attributes  : res
                     }
    
                 //commit("setProps", data)
@@ -78,8 +82,16 @@ export const   retrieveNonUserProperties = async ({commit,dispatch}, data)=>{
     
     // action to update the properties of teh buttons on the user Toolbar
     export const updateToolBarButtonProperty=({commit,dispatch}, buttonProps)=>{
+        
+        console.log("--> updateToolBarButtonProperty",buttonProps)
+
         commit("setToolBarButtonProperty", buttonProps)
-        dispatch("updateDirtyFlag",buttonProps)
+        
+        const dirtyFlag = {
+            controlName: "toolBarProps",
+            value: true
+        }
+        dispatch("updateDirtyFlag", dirtyFlag)
 
     }
 
@@ -105,17 +117,22 @@ export const   retrieveNonUserProperties = async ({commit,dispatch}, data)=>{
     export const saveToolbarSettings=({state,dispatch,commit},siteData)=>{
 
         console.table("--> saveToolbarSettings Called", siteData)
+        
         return new Promise(function(resolve, reject){
             
             if (state.isDirty && state.isControlDirty.toolBarProps){
                 const dataItems = {
                     dataItems : state.toolBarProps,
-                    siteKey: siteData.item(),                 //made up of user ID and SiteID
-                    subKey: "mainToolBar"
+                    siteKey: siteData.key(),                 //made up of user ID and SiteID
+                    subKey: "toolBarProps"
                 }
-            
+                
+                console.log("dataItems=",dataItems)
+
                 dispatch("lambdaSaveToolBarSettings", dataItems)
                 .then(() =>{
+
+                    console.log("returned from Lambda Saved toolbarItems")
                     // clear is dirty flag for this item
                     const flagDetails = {
     
@@ -124,7 +141,7 @@ export const   retrieveNonUserProperties = async ({commit,dispatch}, data)=>{
                     }
     
                     commit("setIsDirtyFlag", flagDetails)
-                   resolve(true)
+                   resolve()
     
                 })
                 .catch(err=>{
@@ -134,7 +151,7 @@ export const   retrieveNonUserProperties = async ({commit,dispatch}, data)=>{
            
            
                 }else{
-                    resolve(true)
+                    resolve()
                 }
                 
         })
@@ -156,7 +173,7 @@ export const   retrieveNonUserProperties = async ({commit,dispatch}, data)=>{
                 userId : userId,
                 pageName : getters.getCurrentPageName,
 
-               item : function  (){
+               key: function  (){
                 return  this.userId + this.siteId
                },
 

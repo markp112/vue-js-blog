@@ -46,7 +46,13 @@ const types = {
      image: 2,
      video: 3
  }
+//return the key for a given element
+// the key is used to identify content in the linked to a layout in the elementd
+  export function getElementKey (layoutIndex,elementNumber) {
 
+    
+   return   "###L" + layoutIndex + "E"+ elementNumber +"###"
+ }
 
 export default{
     Layout,

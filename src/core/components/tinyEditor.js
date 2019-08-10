@@ -50,7 +50,7 @@ export default {
               'insertdatetime', 
               'media', 
               'nonbreaking',
-        'save', 
+        
               'table',
               'contextmenu',
               'directionality',
@@ -62,7 +62,7 @@ export default {
         toolbar: 'insert | undo redo | formatselect | styleselect fontselect fontsizeselect |'+
                  ' bold italic underline forecolor backcolor | link image media |'+
                  ' alignleft aligncenter alignright alignjustify |'+
-                 ' bullist numlist outdent indent | removeformat | help | code | save'
+                 ' bullist numlist outdent indent | removeformat | help | code | emoticons |'
         ,
         
         font_formats: 'Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Lato=Lato;Lobster=lobster;Raleway=raleway;Roboto=roboto;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats',
@@ -90,12 +90,12 @@ export default {
         },
         // END: ???????????
         
-        // START: Save button call back function
+      /*   // START: Save button call back function
         save_onsavecallback: function () {  
           this.content = tinymce.activeEditor.getContent();
           alert(this.content);
         },
-        // END: Save button call back function
+        // END: Save button call back function */
         
       })
     }

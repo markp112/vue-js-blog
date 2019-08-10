@@ -33,6 +33,11 @@ import moduleProps from './storeModules/controlProps/controlProps'
 // holds the data about the current page being built /edited
 import modulePageContents from './storeModules/pageContent/pageContent'
 
+// manages the store for settings
+import moduleSettings from './storeModules/settings/settings'
+
+
+
 export default new Vuex.Store({
     data(){
         return {
@@ -51,5 +56,6 @@ export default new Vuex.Store({
         moduleSites : moduleSite,
         moduleProperties : moduleProps,
         modulePageContent : modulePageContents,
+        moduleSetting : moduleSettings,
     }
 })

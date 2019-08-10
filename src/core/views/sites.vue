@@ -8,7 +8,7 @@
 <template>
 
  
-    <div :class="pageHeightMax">
+  
 
 <v-container grid-list-xs>
     
@@ -48,7 +48,7 @@
     </v-flex>
         </v-layout>
   </v-container>
-           </div>
+        
 </template>
 
 <script>

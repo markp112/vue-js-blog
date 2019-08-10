@@ -50,25 +50,29 @@
                 <v-divider></v-divider>
            
             </v-layout>
-            <v-alert :color="alertColour" :value="alert" transition="fade-transition">
-               
-                {{ alertMessage }}
-                
-                <v-btn flat icon color="primary" @click="alert = false" >
-                    <v-icon>highlight_off</v-icon>
-                </v-btn>
-
-             </v-alert>
+           <err-Dialog errorMessage="alertMessage" v-if="showAlert" @closeClick ="showAlert=false"></err-Dialog>
    </v-container>
 
 </template>
 
 <script>
+
+import errDialog from '../../components/base/baseErrorDisplay'
+
 export default {
+    name:"pageList",
+
+    components:{
+        "err-Dialog" : errDialog
+    },
+
+
     data () {
         return {
 
             currentMenu:'Home Page',
+          
+          //heasders for the grid
             headers:[
                 {
                     text:"",
@@ -99,8 +103,8 @@ export default {
                 },
 
             ],
-            alert:false,
-            alertColour:"success",
+            showAlert:false,
+            
             alertMessage:"",
 
         }
@@ -115,9 +119,16 @@ export default {
    //            
     // user has clicked a page they wish to edit
     // load the page details and send them to the editor based on the template linked to the page
-    //
+    // item.title will contain the name of the current page
+
           this.$store.dispatch("updateCurrentPageName", item.title)
 
+
+        //retrieve all the content for this page
+        // inlcuding text,
+        // layouts
+        // toolbar settings
+        // images
           this.$store.dispatch("retrievePageDetail", item.title)
           .then(template => {  
             
@@ -133,10 +144,10 @@ export default {
             }
         })
         .catch(err =>{
-            console.log("error Alert")
-            this.alertMessage = JSON.stringify( err)
-            this.alertColour = "error"
-            this.alert = true
+            console.log("error Alert",err)
+            this.alertMessage = JSON.stringify(err)
+            
+            this.showAlert = true
 
         })
           

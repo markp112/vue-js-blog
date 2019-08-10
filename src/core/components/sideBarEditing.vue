@@ -99,18 +99,10 @@ export default {
            
            console.log("sideBar on Menu Item clicked->", menuItem)
 
-            const item = {
-                
-                  page: menuItem.component
-               
-               }
-
+            
            switch (menuItem.component){
              case "toolBar" : 
-                          
-           
-              
-              
+             
               break;
              
              case "New Site": 
@@ -138,8 +130,15 @@ export default {
         },
 
         // respond to user setting a switch
+        // expects: data
+        /*   data = {
+           control: "what is the control on the page we are acting on eg. ToolBarProps"
+           property: model, - this contains the actual property we are acting upon linked to the toolbar
+           value: model.value -- this is the value
+       } */
         onPropertyChanged(data){
-            console.log("--> onPropertyChanged", data)
+        
+        console.log("--> onPropertyChanged", data)
 
             
             //set the control value base on the data assigned
@@ -147,13 +146,14 @@ export default {
             
             //indicate the control has been editied
            
-            this.$store.dispatch("updateDirtyFlag",data)
+           // this.$store.dispatch("updateDirtyFlag",data)
         },
 
         //respond to the user updating the text for the title on the toolbar
         onTitleTextChange(data){
           
           this.$store.dispatch("updateProperty",data)
+          
         },
 
         onToolBarColourChange(data){
