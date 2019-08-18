@@ -198,6 +198,7 @@
 
                 if(!isAlreadyLoaded){
                     const CONTROLTOACTIVATE ="toolBarProps"
+                    
                     const data = {
                         item:"editors",
                         subItem:"toolBar",

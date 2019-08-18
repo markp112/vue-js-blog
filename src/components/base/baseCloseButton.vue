@@ -1,7 +1,7 @@
 <template>
    
         <v-card :color="backColour" width="100%" >
-           <v-layout row mt-1  >
+           <v-layout row mt-1 >
               <v-flex xs8 >
                  {{title}}
                       

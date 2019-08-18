@@ -132,8 +132,8 @@ import dataClasses from '../../../dataClasses/pageSection'
             this.edit = true
             this.componentId = template
             
-           console.log("template =",template)
-           console.log("element = ", this.element)
+           //console.log("template =",template)
+           //console.log("element = ", this.element)
 
             switch (template){
 
@@ -149,7 +149,7 @@ import dataClasses from '../../../dataClasses/pageSection'
                     break;
             }
 
-               const elementComponent = {
+            const elementComponent = {
                 element : this.element,
                 index: this.index,
                 

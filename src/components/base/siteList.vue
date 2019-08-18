@@ -75,6 +75,9 @@ export default {
          onEditSiteClicked(siteId){
 
             console.log("-->OnEditSiteClicked-->" ,siteId)
+            //update the store with the selected siteID
+            this.$store.dispatch("updateSiteId",siteId)
+
             this.$emit("onSiteEditClick",siteId)
 
         },

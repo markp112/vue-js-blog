@@ -22,18 +22,19 @@
 
                 :showSiteDetail="false"
                               
-                :menuItems = "menuItems"
+                :menuItems = "menuItems"    
+                :componentData = "componentData"
 
                 @menuItemClick = "onMenuItemClick"     
                 @onCloseClick = "onComponentCloseClick"
                 @onSiteEditClick = "onSiteEditClick"
-
+                @onError = "onError"
                 >
     </component>
    
    
     <v-card v-if="showError">
-        <error-Display  :errorMessage="errMessage" @onCloseClick="onErrorCloseClick"></error-Display>
+        <error-Display  :errorMessage="errMessage" @closeClick="onErrorCloseClick"></error-Display>
     </v-card>
 
 </v-card>
@@ -56,6 +57,7 @@ export default {
         "custom-Icon":  myicon,
         "settings-Menu": settingsMenu,
         "theme-Selector" : theme,
+
     },
 
     data(){
@@ -68,6 +70,7 @@ export default {
             menuItems : [],             // contains the list of menu Items which are passed to the settingsMenu
             activeMenu : "",            //last active menu to support back navigation
             activeComponent:"",         //last active component to support back navigation
+            componentData:[]
            
         }
     },
@@ -81,12 +84,28 @@ export default {
   
     methods:{
 
+        
         //show the sites components first retrieving the data
-
-       onMenuItemClick(component){
+        // index is the index of the item that has been clicked
+       onMenuItemClick(index){
            
-              console.log("onMenuItemClicked",component)
-                    
+              console.log("onMenuItemClicked",index)
+              
+              const selectedItem = this.menuItems[index]
+              const component = this.menuItems[index].component
+               
+               //check if we need additional data for the subcomponent that is not 
+               if(selectedItem.hasData) {
+                   const data = {
+                       subKey:selectedItem.subKey,
+                       key:selectedItem.key
+                   }
+                   this.$store.dispatch("settings_getComponentData",data)
+                   .then(d =>{
+                       this.componentData = d
+                   })
+               }
+       
                 this.componentId = component
                 this.activeComponent = component
 
@@ -102,11 +121,20 @@ export default {
             })
         },
 
-
+        //------------------------------------------------------------------------
         //respond to events from components
+        
+        //user has clicked the close button on the error component
         onErrorCloseClick(){
             this.showError = false
             this.errMessage = ""
+        },
+
+        //component has triggered an error show error dialog
+        onError(errMsg){
+            console.log("errMsg",errMsg)
+            this.errMessage = errMsg
+            this.showError = true
         },
 
         //user has closed the component - show the main menu
@@ -128,7 +156,7 @@ export default {
 <style scoped>
     .settingsHeader{
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        font-size:3em;
+        font-size:2em;
         color:cornflowerblue;
 
     }

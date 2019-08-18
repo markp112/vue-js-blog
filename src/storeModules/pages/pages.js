@@ -1,5 +1,6 @@
 
 import * as actions from "./actions"
+
 const defaultstate = {
     
     // This holds a list of pages the user has created for their current site
